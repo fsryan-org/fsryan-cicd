@@ -31,6 +31,7 @@ jobs:
         persist-credentials: true
     - name: Commit files
       run: |
+        git config --local remote.origin.url "git@github.com:fsryan-org/fsryan-cicd.git"
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
     - name: Get tags
@@ -43,4 +44,4 @@ jobs:
     - name: Perform CICD
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
-        arguments: :plugin:gitConfig :plugin:jacocoTestReport :plugin:performCICD
+        arguments: --no-daemon :plugin:gitConfig :plugin:jacocoTestReport :plugin:performCICD -Pcom.fsryan.cicd.enablePush=true

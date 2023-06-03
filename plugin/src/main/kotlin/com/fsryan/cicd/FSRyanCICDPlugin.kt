@@ -166,13 +166,17 @@ class FSRyanCICDPlugin : Plugin<Project> {
         group = "FSRyan CI/CD"
         doLast {
             when {
-                branch.isDevelopBranch() -> bumpVersion("buildNumber") { nextBuildNumber() }
-                branch.isReleaseBranch() -> publishReleaseTagAndBeginNextPatchVersion()
+                branch.isDevelopBranch() -> bumpVersion(versionPart = "buildNumber", pushTag = enablePush()) { nextBuildNumber() }
+                branch.isReleaseBranch() -> publishReleaseTagAndBeginNextPatchVersion(pushTag = enablePush())
                 else -> fsryanCICDLog("There is no configuration for CI/CD from branch: $branch")
             }
 
             fsryanCICDLog("Perform CI/CD task completed")
         }
+    }
+
+    private fun Project.enablePush(): Boolean {
+        return findProperty("com.fsryan.cicd.enablePush")?.toString().orEmpty().toBoolean()
     }
 
     private fun Project.createPrintReleaseNotesTasks() {
@@ -212,6 +216,7 @@ class FSRyanCICDPlugin : Plugin<Project> {
         versionPart: String,
         ensureBranchUpToDate: Boolean = true,
         commitToTag: String? = null,
+        pushTag: Boolean = true,
         bumpVersion: SemanticVersion.() -> SemanticVersion
     ) {
         lastVersionMap.forEach { (versionSpecifier, semanticVersion) ->
@@ -224,15 +229,16 @@ class FSRyanCICDPlugin : Plugin<Project> {
 
             val versionString = nextVersion.name
             fsryanCICDLog("Tagging new version bump: ${nextVersion.name} for specifier: $versionSpecifier")
-            pushVersionTag(
+            createVersionTag(
                 versionSpecifier = versionSpecifier,
                 versionString = versionString,
-                commitToTag = commitToTag
+                commitToTag = commitToTag,
+                push = pushTag
             )
         }
     }
 
-    private fun publishReleaseTagAndBeginNextPatchVersion() {
+    private fun publishReleaseTagAndBeginNextPatchVersion(pushTag: Boolean = true) {
         fsryanCICDLog("publishing release tag and beginning next patch version")
         lastVersionMap.forEach { (versionSpecifier, semanticVersion) ->
             ensureBranchUpToDate(
@@ -259,13 +265,18 @@ class FSRyanCICDPlugin : Plugin<Project> {
                 return
             }
 
-            pushReleaseTag(
+            createReleaseTag(
                 versionSpecifier = versionSpecifier,
                 semanticVersion = semanticVersion,
                 commitToTag = commitToTag
             )
             deleteRemoteAndLocalTag(versionTag)
-            bumpVersion(versionPart = "patch", ensureBranchUpToDate = false, commitToTag = commitToTag) { nextPatch() }
+            bumpVersion(
+                versionPart = "patch",
+                ensureBranchUpToDate = false,
+                commitToTag = commitToTag,
+                pushTag = pushTag
+            ) { nextPatch() }
         }
     }
 
@@ -300,12 +311,16 @@ class FSRyanCICDPlugin : Plugin<Project> {
         }
     }
 
-    private fun deleteRemoteAndLocalTag(versionTag: String) {
+    private fun deleteRemoteAndLocalTag(versionTag: String, push: Boolean = true) {
         performModification("deleting remote tag: $versionTag") {
-            try {
-                vcApi.deleteTag(versionTag, remote = true).also(::fsryanCICDLog)
-            } catch (ee: ExecException) {
-                fsryanCICDLog(("ExecException while deleting remote tag: $versionTag"))
+            if (push) {
+                try {
+                    vcApi.deleteTag(versionTag, remote = true).also(::fsryanCICDLog)
+                } catch (ee: ExecException) {
+                    fsryanCICDLog("ExecException while deleting remote tag: $versionTag")
+                }
+            } else {
+                fsryanCICDLog("Configured to not push--not deleting remote tag")
             }
         }
 
@@ -318,23 +333,30 @@ class FSRyanCICDPlugin : Plugin<Project> {
         }
     }
 
-    private fun pushReleaseTag(
+    private fun createReleaseTag(
         versionSpecifier: String,
         semanticVersion: SemanticVersion,
-        commitToTag: String
+        commitToTag: String,
+        push: Boolean = true,
     ) {
         val version = semanticVersion.versionString(
             includeBuildNumber = false,
             includeDashQualifier = false
         )
-        pushVersionTag(
+        createVersionTag(
             versionSpecifier = versionSpecifier,
             versionString = version,
-            commitToTag = commitToTag
+            commitToTag = commitToTag,
+            push = push
         )
     }
 
-    private fun pushVersionTag(versionSpecifier: String, versionString: String, commitToTag: String? = null) {
+    private fun createVersionTag(
+        versionSpecifier: String,
+        versionString: String,
+        commitToTag: String? = null,
+        push: Boolean = true
+    ) {
         performModification("pushing version tag: $versionString; tag will be on commit ${commitToTag ?: "HEAD"}") {
             val tag = commitInspector.bumpVersionTagString(
                 versionString = versionString,
@@ -342,7 +364,11 @@ class FSRyanCICDPlugin : Plugin<Project> {
                 versionSpecifier = versionSpecifier
             )
             vcApi.tag(tagName = tag, commitToTag = commitToTag).also(::fsryanCICDLog)
-            vcApi.push(remote = "origin", branch = tag).also(::fsryanCICDLog)
+            if (push) {
+                vcApi.push(remote = "origin", branch = tag).also(::fsryanCICDLog)
+            } else {
+                fsryanCICDLog("Configured to not push--not creating remote tag: $tag")
+            }
         }
     }
 
