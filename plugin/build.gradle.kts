@@ -100,6 +100,7 @@ kotlin {
 
 task("gitConfig") {
     doLast {
-        GitApi(project).runCommand("config", "--list")
+        val config = GitApi(project).runCommand("config", "--list")
+        println(config)
     }
 }
