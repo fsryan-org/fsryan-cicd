@@ -52,9 +52,9 @@ fsPublishingConfig {
     awsAccessKeyId = evaluateProperty(propName = "com.fsryan.aws_access_key", envVarName = "AWS_ACCESS_KEY")
     awsSecretKey = evaluateProperty(propName = "com.fsryan.aws_secret_key", envVarName = "AWS_SECRET_KEY")
     releaseRepoName = "release"
-    releaseRepoUrl = "s3://fsryan-maven-repo/"
+    releaseRepoUrl = "s3://fsryan-maven-repo/release"
     snapshotRepoName = "snapshot"
-    snapshotRepoUrl = "s3://fsryan-maven-repo/"
+    snapshotRepoUrl = "s3://fsryan-maven-repo/snapshot"
     description = "The basic tasks for CI/CD in a gradle build that builds through Azure Pipelines"
 //    extraPomProperties = mapOf(
 //        "gitrev" to GitApi(project).headCommitHash(short = true)
