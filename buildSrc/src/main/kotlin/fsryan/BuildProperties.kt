@@ -32,6 +32,14 @@ object BuildProperties {
         }
     }
 
+    fun prop(
+        project: Project,
+        propName: String,
+        envVarName: String = "",
+        preferEnvVar: Boolean = false,
+        defaultValue: String? = null
+    ): String = project.evaluateProperty(propName, envVarName, preferEnvVar, defaultValue)
+
     fun Project.evaluateProperty(
         propName: String,
         envVarName: String = "",

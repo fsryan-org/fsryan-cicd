@@ -19,8 +19,8 @@ repositories {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 dependencies {
@@ -48,7 +48,7 @@ fsPublishingConfig {
     siteUrl = "https://github.com/fsryan-org/fsryan-cicd"
     baseArtifactId = "fsryan-cicd"
     groupId = project.group.toString()
-    versionName = project.version.toString()
+    versionName = "0.0.1"
     awsAccessKeyId = evaluateProperty(propName = "com.fsryan.aws_access_key", envVarName = "AWS_ACCESS_KEY")
     awsSecretKey = evaluateProperty(propName = "com.fsryan.aws_secret_key", envVarName = "AWS_SECRET_KEY")
     releaseRepoName = "release"
@@ -76,4 +76,9 @@ tasks.jacocoTestReport {
         }
     )
     dependsOn(tasks.test)
+}
+
+
+kotlin {
+    jvmToolchain(11)
 }
