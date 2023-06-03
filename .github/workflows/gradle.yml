@@ -44,9 +44,4 @@ jobs:
     - name: Perform CICD
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
-        arguments: :plugin:gitConfig :plugin:jacocoTestReport :plugin:performCICD
-    - name: Push Tags
-      uses: ad-m/github-push-action@master
-      with:
-        force: false
-        tags: true
+        arguments: --no-daemon :plugin:gitConfig :plugin:jacocoTestReport :plugin:performCICD -Pcom.fsryan.cicd.enablePush=true
