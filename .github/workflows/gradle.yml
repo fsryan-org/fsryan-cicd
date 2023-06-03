@@ -26,9 +26,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        persist-credentials: true
     - name: Commit files
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
