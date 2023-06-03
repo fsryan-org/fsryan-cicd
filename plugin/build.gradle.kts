@@ -1,4 +1,7 @@
-
+import com.fsryan.cicd.CICDCommitInspector
+import com.fsryan.cicd.FSRyanCICDPlugin
+import com.fsryan.cicd.GitApi
+import com.fsryan.cicd.SemanticVersion
 import fsryan.BuildProperties.evaluateProperty
 import fsryan.Deps
 import fsryan.Deps.Versions
@@ -10,7 +13,14 @@ plugins {
     id("maven-publish")
     id("fsryan-gradle-publishing")
     id("org.jetbrains.dokka")
+    id("fsryan-cicd")
 }
+
+// TODO: upgrade this repo to remove this section
+val versionString = CICDCommitInspector(GitApi(project)).findLastVersion(projectQualifier = project.name)
+val semanticVersion = SemanticVersion.parse(versionString)
+version = plugins.findPlugin(FSRyanCICDPlugin::class)?.branchSpecificVersionName(semanticVersion)
+    ?: throw IllegalStateException("no version for project: ${project.name}")
 
 group = "com.fsryan.gradle"
 
@@ -48,7 +58,7 @@ fsPublishingConfig {
     siteUrl = "https://github.com/fsryan-org/fsryan-cicd"
     baseArtifactId = "fsryan-cicd"
     groupId = project.group.toString()
-    versionName = "0.0.1"
+    versionName = project.version.toString()
     awsAccessKeyId = evaluateProperty(propName = "com.fsryan.aws_access_key", envVarName = "AWS_ACCESS_KEY")
     awsSecretKey = evaluateProperty(propName = "com.fsryan.aws_secret_key", envVarName = "AWS_SECRET_KEY")
     releaseRepoName = "release"
@@ -56,9 +66,9 @@ fsPublishingConfig {
     snapshotRepoName = "snapshot"
     snapshotRepoUrl = "s3://fsryan-maven-repo/snapshot"
     description = "The basic tasks for CI/CD in a gradle build that builds through Azure Pipelines"
-//    extraPomProperties = mapOf(
-//        "gitrev" to GitApi(project).headCommitHash(short = true)
-//    )
+    extraPomProperties = mapOf(
+        "gitrev" to GitApi(project).headCommitHash(short = true)
+    )
 }
 
 jacoco {
