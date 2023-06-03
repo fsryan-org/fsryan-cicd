@@ -17,6 +17,7 @@ object Deps {
             }
             object FSRyan {
                 const val gradlePublishing = "0.3.0"
+                const val cicd = "0.0.1"
             }
         }
         object Test {
@@ -43,6 +44,7 @@ object Deps {
         object FSRyan {
             private val version = Versions.Plugin.FSRyan
             const val gradlePublishing = "com.fsryan.gradle:fsryan-gradle-publishing:${version.gradlePublishing}"
+            const val cicd = "com.fsryan.gradle:fsryan-cicd:${version.cicd}"
         }
         object JetBrains {
             private val version = Versions.Global.JetBrains

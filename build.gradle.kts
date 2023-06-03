@@ -29,6 +29,7 @@ buildscript {
             classpath(dokka)
             classpath(kotlin)
         }
+        classpath(fsryan.Deps.Plugin.FSRyan.cicd)
     }
 }
 
