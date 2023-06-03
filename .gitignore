@@ -1,0 +1,14 @@
+**/*.iml
+**/.idea/*
+
+.gradle/*
+build/*
+
+# Local plugin build
+buildSrc/build/*
+buildSrc/.gradle/*
+
+# Actual plugin build
+plugin/build/*
+local.properties
+gradle.properties
