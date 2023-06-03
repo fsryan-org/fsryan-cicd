@@ -26,6 +26,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        ssh-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        persist-credentials: true
+    - name: Commit files
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
     - name: Get tags
       run: git fetch --prune --unshallow --tags
     - name: Set up JDK 11
@@ -36,4 +43,4 @@ jobs:
     - name: Perform CICD
       uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
-        arguments: :plugin:jacocoTestReport :plugin:performCICD
+        arguments: :plugin:gitConfig :plugin:jacocoTestReport :plugin:performCICD

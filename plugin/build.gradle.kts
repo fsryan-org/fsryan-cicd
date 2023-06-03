@@ -97,3 +97,10 @@ tasks.jacocoTestReport {
 kotlin {
     jvmToolchain(11)
 }
+
+task("gitConfig") {
+    doLast {
+        val config = GitApi(project).runCommand("config", "--list")
+        println(config)
+    }
+}
