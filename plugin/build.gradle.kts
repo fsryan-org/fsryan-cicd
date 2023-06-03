@@ -71,6 +71,11 @@ fsPublishingConfig {
     )
 }
 
+fsryanCICD {
+    cicdReleaseDependentTasks = setOf("jacocoTestReport", "assemble", "release")
+    cicdDevelopDependentTasks = setOf("jacocoTestReport", "assemble", "release")
+}
+
 jacoco {
     toolVersion = Versions.Plugin.Eclemma.jacoco
 }
