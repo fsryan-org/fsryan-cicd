@@ -65,9 +65,9 @@ fsPublishingConfig {
     snapshotBasicPassword = evaluateProperty(propName = "com.fsryan.fsryan_snapshot_password", envVarName = "FSRYAN_MAVEN_SNAPSHOT_REPO_TOKEN")
     useBasicCredentials = true
     releaseRepoName = "release"
-    releaseRepoUrl = "s3://fsryan-maven-repo/release"
+    releaseRepoUrl = "https://maven.fsryan.com/fsryan-release"
     snapshotRepoName = "snapshot"
-    snapshotRepoUrl = "s3://fsryan-maven-repo/snapshot"
+    snapshotRepoUrl = "https://maven.fsryan.com/fsryan-snapshot"
     description = "The basic tasks for CI/CD in a gradle build that builds through Azure Pipelines"
     extraPomProperties = mapOf(
         "gitrev" to GitApi(project).headCommitHash(short = true)
