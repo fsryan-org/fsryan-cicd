@@ -59,8 +59,11 @@ fsPublishingConfig {
     baseArtifactId = "fsryan-cicd"
     groupId = project.group.toString()
     versionName = project.version.toString()
-    awsAccessKeyId = evaluateProperty(propName = "com.fsryan.aws_access_key", envVarName = "AWS_ACCESS_KEY")
-    awsSecretKey = evaluateProperty(propName = "com.fsryan.aws_secret_key", envVarName = "AWS_SECRET_KEY")
+    releaseBasicUser = evaluateProperty(propName = "com.fsryan.fsryan_maven_repo_user", envVarName = "FSRYAN_MAVEN_REPO_USER")
+    releaseBasicPassword = evaluateProperty(propName = "com.fsryan.fsryan_release_password", envVarName = "FSRYAN_MAVEN_RELEASE_REPO_TOKEN")
+    snapshotBasicUser = evaluateProperty(propName = "com.fsryan.fsryan_maven_repo_user", envVarName = "FSRYAN_MAVEN_REPO_USER")
+    snapshotBasicPassword = evaluateProperty(propName = "com.fsryan.fsryan_snapshot_password", envVarName = "FSRYAN_MAVEN_SNAPSHOT_REPO_TOKEN")
+    useBasicCredentials = true
     releaseRepoName = "release"
     releaseRepoUrl = "s3://fsryan-maven-repo/release"
     snapshotRepoName = "snapshot"

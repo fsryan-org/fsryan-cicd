@@ -8,6 +8,22 @@ buildscript {
             mavenLocal()
         }
         maven {
+            name = "fsryan-release"
+            url = uri("https://maven.fsryan.com/fsryan-release")
+            credentials(PasswordCredentials::class) {
+                username = "ryan"
+                password = props.prop(rootProject, propName = "com.fsryan.fsryan_release_password", envVarName = "FSRYAN_MAVEN_RELEASE_REPO_TOKEN")
+            }
+        }
+        maven {
+            name = "fsryan-snapshot"
+            url = uri("https://maven.fsryan.com/fsryan-snapshot")
+            credentials(PasswordCredentials::class) {
+                username = "ryan"
+                password = props.prop(rootProject, propName = "com.fsryan.fsryan_snapshot_password", envVarName = "FSRYAN_MAVEN_SNAPSHOT_REPO_TOKEN")
+            }
+        }
+        maven {
             url = uri("s3://fsryan-maven-repo/release")
             credentials(AwsCredentials::class) {
                 accessKey = props.prop(rootProject, propName = "com.fsryan.aws_access_key", envVarName = "AWS_ACCESS_KEY")
@@ -21,6 +37,7 @@ buildscript {
                 secretKey = props.prop(rootProject, propName = "com.fsryan.aws_secret_key", envVarName = "AWS_SECRET_KEY")
             }
         }
+
         mavenCentral()
     }
     dependencies {

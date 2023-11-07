@@ -5,8 +5,8 @@ object Deps {
     object Versions {
         object Global {
             object JetBrains {
-                const val dokka = "1.8.10"
-                const val kotlin = "1.8.21"
+                const val dokka = "1.9.10"
+                const val kotlin = "1.9.20"
             }
         }
         object Main {
